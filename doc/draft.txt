@@ -1,0 +1,29 @@
+main objective= automate the process of admiting and routing costumers in a service station
+
+workstations:
+	-fixed set of workstations
+	-only stations with an assigned mechanic can be used
+
+services:
+	-services are scheduled in advance
+	-services that can be carried out depend on vehicle type
+	-services are devided into universal and specific services
+	-multiple services in a single vehicle should be scheduled in a way that permits daisy-chaining services as this saves time.
+
+vehicle:
+	-Has an associated data sheet that holds relevant data as in vehicle condition and the need for services to be scheduled.
+
+obligatory functionality:
+	system configuration:
+		-Loading into the "program" the service station's propreties. As in the workstations, mechanics and the station's open hours.
+
+	registering a costumer:
+		-Web-based costumer registrarion and voucher redeeming.
+
+	general worflow:
+		-Services are scheduled in a simulation. The client has a final say in accepting the service terms.
+		-When the set of services is complete (could be a single or multiple services is complete) an SMS is sent to the costumer if the costumer as required the station to do so.
+		-Mechanics identify themselves in a workstation using their employee card. The system checks if the mechanic is allowed to work on that workstation. This action registers the shift's start time.
+		-The mechanic has access to a list of jobs assigned to him (in relation to the workstation) and is able to signal that he is starting the job.
+		-A mechanic can cancel a job he is unable to do. He should indicate the motive for the cancelation.
+		-When there are no jobs left the mechanic can register the end of his work shift and the system records the time he checked out.
