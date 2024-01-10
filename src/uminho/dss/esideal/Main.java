@@ -32,7 +32,7 @@ public class Main {
                     new uminho.dss.esideal.ui.FE.TextUI().run();
                     break;
                 case "3":
-                    //new uminho.dss.esideal.ui.M.TextUI().run();
+                    new uminho.dss.esideal.ui.M.TextUI().run();
                     break;
                 default:
                     System.out.println("Invalid option '"+args[0]+"'. Valid options:\n1 - System Manager\n2 - Frontdesk Employee\n3 - Mechanic" );
