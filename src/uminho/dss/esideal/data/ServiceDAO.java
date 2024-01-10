@@ -338,4 +338,9 @@ public class ServiceDAO {
         }
         return services;
     }
+
+    public void updateTime (Time time)
+    {
+        throw new Exception("N TA FEITO");
+    }
 }

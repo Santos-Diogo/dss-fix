@@ -1,5 +1,6 @@
 package uminho.dss.esideal.ui.SM;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -53,11 +54,13 @@ public class TextUI {
         Menu menu = new Menu("System Manager Menu - "+this.name, new String[]{
                 "Manage workstations",
                 "Manage employees",
-                "Register opening hours"
+                "Register opening hours",
+                "Select Current Time"
         });
         
         menu.setHandler(1, ()->manageWorkstations());
         menu.setHandler(2, ()->manageEmployees());
+        menu.setHandler(3, ()->selectCurrentTime());
         menu.run();
     }
 
@@ -88,6 +91,15 @@ public class TextUI {
        /* menu.setHandler(3, null);
         menu.setHandler(4, null); */
         menu.run();
+    }
+
+    private void selectCurrentTime ()
+    {
+        System.out.println("Introduze time you want to skip to:");
+        System.out.print("Time in format 'hh:mm:ss : ");
+        String in= scan.nextLine();
+        Time time= new Time(Time.parse(in));
+        model.setTime(time);
     }
 
     private void registerFrontdesk () {

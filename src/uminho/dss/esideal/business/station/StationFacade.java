@@ -240,4 +240,11 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
                 .collect(Collectors.toList());
         return res;
     }
+
+    @Override
+    public void setTime (Time time)
+    {
+        this.modelService.updateTime(time);
+        this.current_time= time.toLocalTime();
+    }
 }

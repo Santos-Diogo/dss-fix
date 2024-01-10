@@ -1,5 +1,6 @@
 package uminho.dss.esideal.business.service;
 
+import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Collection;
 
@@ -69,5 +70,11 @@ public class ServiceFacade implements IServiceFacade{
         } else {
             return;
         } */
+    }
+
+    @Override
+    public void updateTime(Time time) 
+    {
+        this.serviceDAO.updateTime (time);    
     }
 }

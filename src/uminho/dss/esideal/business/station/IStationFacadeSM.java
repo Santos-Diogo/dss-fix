@@ -1,5 +1,6 @@
 package uminho.dss.esideal.business.station;
 
+import java.sql.Time;
 import java.time.LocalTime;
 
 import uminho.dss.esideal.business.workstation.Workstation;
@@ -19,4 +20,6 @@ public interface IStationFacadeSM
     public int nextWorkstationID ();
 
     public int nextEmployeeID ();
+
+    public void setTime (Time time);
 }

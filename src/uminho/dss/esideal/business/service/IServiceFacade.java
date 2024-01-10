@@ -1,5 +1,6 @@
 package uminho.dss.esideal.business.service;
 
+import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Collection;
 
@@ -23,4 +24,6 @@ public interface IServiceFacade {
     public void startService(int workstationId, int employeeID, LocalTime current);
 
     void endService(int id);
+
+    void updateTime (Time time);
 }
