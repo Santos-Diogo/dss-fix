@@ -149,7 +149,7 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
      * @TODO
      */
     @Override
-    public LocalTime scheduleService(Service.Type type, String car, Duration duration) throws Exception
+    public LocalTime scheduleService(Service.Type type, String car, String name, Duration duration) throws Exception
     {
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
@@ -161,7 +161,7 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
-        return scalonateService (workstations, employees, duration, type, car, Status.NOTSCHEDULED);
+        return scalonateService (workstations, employees, duration, type, name, car, Status.NOTSCHEDULED);
     }
 
     // System Manager
@@ -212,7 +212,7 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
-        return scalonateService (workstations, employees, duration, type, vehicle, Status.DUE);
+        return scalonateService (workstations, employees, duration, type, "Checkup", vehicle, Status.DUE);
     }
 
     @Override
@@ -221,14 +221,14 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         this.modelClient.addVehicle(new Vehicle(lp, owner));
     }
 
-    private LocalTime scalonateService (Collection<Integer> workstations, Collection<Integer> mechanics, Duration duration, Type type, String car, Status status) {
+    private LocalTime scalonateService (Collection<Integer> workstations, Collection<Integer> mechanics, Duration duration, Type type, String name, String car, Status status) {
         Map<String, Object> workstationIDtime = this.modelWorkstation.getLeastOccupiedWorkstation(workstations);
         Map<String, Object> mechanicIDtime = this.modelEmployee.getLeastOccupiedMechanic(mechanics);
         LocalTime workstationTime =(LocalTime) workstationIDtime.get("time");
         LocalTime mechanicTime =(LocalTime) mechanicIDtime.get("time");
         LocalTime minTime = (workstationTime.isBefore(mechanicTime)) ? workstationTime : mechanicTime;
         if (minTime.isBefore(this.opening_time)) minTime = this.opening_time;
-        Service service = new Service(minTime, minTime.plus(duration), type,(Integer) workstationIDtime.get("id"), (Integer) mechanicIDtime.get("id"), car, status);
+        Service service = new Service(minTime, minTime.plus(duration), type, name, (Integer) workstationIDtime.get("id"), (Integer) mechanicIDtime.get("id"), car, status);
         this.modelService.addOrUpdateService(service);
         return minTime;
     }

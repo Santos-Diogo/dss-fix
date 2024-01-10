@@ -57,8 +57,8 @@ public class WorkstationFacade implements IWorkstationFacade{
 
 
     @Override
-    public Collection<Workstation> getWorkstations() throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWorkstations'");
+    public Collection<Workstation> getWorkstations() throws Exception 
+    {
+        return this.workstations.getWorkstations();
     }
 }

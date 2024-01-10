@@ -119,7 +119,7 @@ public class WorkstationDAO {
         return id + 1;
     }
 
-    public Collection<Service.Type> getSkillset (int id) throws MissingEmployeeException{
+    public Collection<Service.Type> getSkillset (int id) throws Exception{
         Collection<Service.Type> skillset = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              PreparedStatement ps = connection.prepareStatement("SELECT type FROM workstation_skill WHERE workstation = ?")) {
@@ -131,7 +131,7 @@ public class WorkstationDAO {
                     Service.Type type = Service.Type.valueOf(rsa.getString("type"));
                     skillset.add(type);
                 }
-                if (skillset.isEmpty()) throw new MissingEmployeeException("No mechanic with the id '"+id+"'"); //Later switch to our Exception
+                if (skillset.isEmpty()) throw new Exception ("No workstation with id "+ id);
             }
         } catch (SQLException e) {
             e.printStackTrace(); // Handle or log the exception appropriately

@@ -27,6 +27,7 @@ public class ServiceDAO {
             "StartTime TIME NOT NULL," +
             "EndTime TIME NOT NULL," +
             "Type VARCHAR(20) NOT NULL," +
+            "Name VARCHAR(50) NOT NULL," +
             "WorkstationId INT," +
             "MechanicId INT," +
             "VehicleId VARCHAR(8)," +
@@ -106,14 +107,15 @@ public class ServiceDAO {
     public void addOrUpdate(Service service) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO services (StartTime, EndTime, Type, WorkstationId, MechanicId, VehicleId, Status) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE StartTime=VALUES(StartTime), EndTime=VALUES(EndTime), Type=VALUES(Type), WorkstationId=VALUES(WorkstationId), VehicleId=VALUES(VehicleId), Status=VALUES(Status)")) {
+                        "INSERT INTO services (StartTime, EndTime, Type, Name, WorkstationId, MechanicId, VehicleId, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE StartTime=VALUES(StartTime), EndTime=VALUES(EndTime), Type=VALUES(Type), Name=VALUES(Name), WorkstationId=VALUES(WorkstationId), VehicleId=VALUES(VehicleId), Status=VALUES(Status)")) {
             ps.setTime(1, Time.valueOf(service.getStart()));
             ps.setTime(2, Time.valueOf(service.getEnd()));
             ps.setString(3, service.getType().name());
-            ps.setInt(4, service.getWorkstationId());
-            ps.setInt(5, service.getEmployeeId());
-            ps.setString(6, service.getVehicleId());
-            ps.setString(7, service.getStatus().name());
+            ps.setString(4, service.getName());
+            ps.setInt(5, service.getWorkstationId());
+            ps.setInt(6, service.getEmployeeId());
+            ps.setString(7, service.getVehicleId());
+            ps.setString(8, service.getStatus().name());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -322,6 +324,7 @@ public class ServiceDAO {
                         rs.getTime("StartTime").toLocalTime(),
                         rs.getTime("EndTime").toLocalTime(),
                         Service.Type.valueOf(rs.getString("Type")),
+                        rs.getString("Name"),
                         rs.getInt("WorkstationId"),
                         rs.getString("VehicleId"),
                         Service.Status.valueOf(rs.getString("Status"))

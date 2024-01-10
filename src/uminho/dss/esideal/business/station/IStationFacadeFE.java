@@ -12,7 +12,7 @@ public interface IStationFacadeFE
 
     public void registerClient(Client client);
 
-    public LocalTime scheduleService(Service.Type type, String car, Duration duration) throws Exception;
+    public LocalTime scheduleService(Service.Type type, String name, String car, Duration duration) throws Exception;
 
     public LocalTime scheduleCheckup (String vehicle) throws Exception;
 

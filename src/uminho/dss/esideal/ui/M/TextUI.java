@@ -4,7 +4,7 @@ import java.io.Console;
 import java.util.Scanner;
 import java.util.Collection;
 import uminho.dss.esideal.business.workstation.Workstation;
-
+import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.station.IStationFacadeM;
 import uminho.dss.esideal.business.station.StationFacade;
 import uminho.dss.esideal.ui.Menu;
@@ -115,7 +115,20 @@ public class TextUI
 
     public void listJobs ()
     {
-        model.listJobs(myNum);
+        Collection<Service> services= model.listJobs(myNum);
+        if (services.isEmpty())
+        {
+            System.out.println("No available Jobs");
+        }
+        else
+        {
+            System.out.println("Available Jobs:");
+            System.out.println("ID\tMATRICULA\tDESCRICAO");
+            for (Service s: services)
+            {
+                System.out.println(s.getId()+"\t"+s.getVehicleId()+"\t"+"NAO ESQUECER DESCRICAO");
+            }
+        }
     }
     
     public void startJob ()

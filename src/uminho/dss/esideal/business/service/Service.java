@@ -22,6 +22,7 @@ public class Service {
     private LocalTime start;
     private LocalTime end;
     private Type type;
+    private String name;
     private Status status;
     private int workstationId;
     // Add functionality for employeeId
@@ -30,21 +31,24 @@ public class Service {
 
     public Service(){}
 
-    public Service(int id, LocalTime start, LocalTime end, Type type, int workstation, String vehicle, Status status) {
+    public Service(int id, LocalTime start, LocalTime end, Type type, String name, int workstation, String vehicle, Status status) 
+    {
         this.id = id;
         this.start = start;
         this.end = end;
         this.type = type;
+        this.name= name;
         this.workstationId = workstation;
         this.vehicleId = vehicle;
         this.status = status;
     }
 
-    public Service(LocalTime start, LocalTime end, Type type, int workstation, int employeeID, String vehicle, Status status) {
+    public Service(LocalTime start, LocalTime end, Type type, String name, int workstation, int employeeID, String vehicle, Status status) {
         this.id = -1;
         this.start = start;
         this.end = end;
         this.type = type;
+        this.name= name;
         this.workstationId = workstation;
         this.employeeId = employeeID;
         this.vehicleId = vehicle;
@@ -63,6 +67,9 @@ public class Service {
     public Type getType() {
         return type;
     }
+    public String getName() {
+        return name;
+    }
     public int getWorkstationId() {
         return workstationId;
     }
@@ -77,6 +84,9 @@ public class Service {
     }
     public void setType(Type type) {
         this.type = type;
+    }
+    public void setName(String name) {
+        this.name= name;
     }
     public void setWorkstationId(int employee) {
         this.workstationId = employee;
