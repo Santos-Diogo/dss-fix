@@ -26,6 +26,7 @@ import uminho.dss.esideal.business.service.Service.Type;
 import uminho.dss.esideal.business.workstation.IWorkstationFacade;
 import uminho.dss.esideal.business.workstation.Workstation;
 import uminho.dss.esideal.business.workstation.WorkstationFacade;
+import uminho.dss.esideal.data.StationStatusDAO;
 
 public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStationFacadeM
 {
@@ -33,23 +34,22 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     private IClientFacade modelClient;
     private IWorkstationFacade modelWorkstation;
     private IServiceFacade modelService;
+    private StationStatusDAO statusDAO;
 
     private LocalTime opening_time; 
     private LocalTime closing_time;
 
-    private LocalTime current_time= LocalTime.of(9, 0, 0);  // set this as a variable in the UI
-
     public StationFacade () {
-        this.modelEmployee = new EmployeeFacade();
-        this.modelWorkstation = new WorkstationFacade();
-        this.modelClient = new ClientFacade();
-        this.modelService = new ServiceFacade();
-        this.opening_time = LocalTime.of(9, 0, 0);
-        this.closing_time = LocalTime.of(19, 0, 0);
-
+        this.modelEmployee= new EmployeeFacade();
+        this.modelWorkstation= new WorkstationFacade();
+        this.modelClient= new ClientFacade();
+        this.modelService= new ServiceFacade();
+        this.statusDAO= StationStatusDAO.getInstance();
+        this.opening_time= LocalTime.of(9, 0, 0);
+        this.closing_time= LocalTime.of(19, 0, 0);
     }
 
-    public StationFacade (IEmployeeFacade modelEmployee, IClientFacade modelClient, IWorkstationFacade modelWorkstation, IServiceFacade modelService, LocalTime current_time)
+    public StationFacade (IEmployeeFacade modelEmployee, IClientFacade modelClient, IWorkstationFacade modelWorkstation, IServiceFacade modelService)
     {
         this.modelEmployee= modelEmployee;
         this.modelClient= modelClient;
@@ -58,18 +58,6 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
 
         this.opening_time = LocalTime.of(9, 0, 0);
         this.closing_time = LocalTime.of(19, 0, 0);
-
-        this.current_time= current_time;
-    }
-
-    
-    /** 
-     * @param time
-     */
-    public void setTime (LocalTime time)
-    {
-        this.current_time= time;
-        // set some stuff in SQL
     }
 
     // All
@@ -137,11 +125,13 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     {
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
+        Time current_time= this.statusDAO.getTime();
+
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, current_time, last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
 
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, current_time, last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -189,10 +179,12 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         Type type = Type.UNIVERSAL;
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
+        Time current_time= this.statusDAO.getTime();
+
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, current_time, last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, current_time, last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -212,6 +204,8 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         LocalTime mechanicTime =(LocalTime) mechanicIDtime.get("time");
         LocalTime minTime = (workstationTime.isBefore(mechanicTime)) ? workstationTime : mechanicTime;
         if (minTime.isBefore(this.opening_time)) minTime = this.opening_time;
+
+        LocalTime current_time= this.statusDAO.getTime().toLocalTime();
         minTime= (minTime.isBefore(current_time)) ? current_time : minTime;
 
         Service service = new Service(minTime, minTime.plus(duration), type, name, (Integer) workstationIDtime.get("id"), (Integer) mechanicIDtime.get("id"), car, status);
@@ -231,7 +225,7 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     public void setTime (Time time)
     {
         this.modelService.updateTime(time);
-        this.current_time= time.toLocalTime();
+        this.statusDAO.setTime(time);
     }
 
     @Override
