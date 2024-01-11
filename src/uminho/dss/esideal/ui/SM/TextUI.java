@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
-
 import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.station.*;
 import uminho.dss.esideal.business.workstation.Workstation;

@@ -375,7 +375,7 @@ public class EmployeeDAO {
     } */
 
     
-    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time last_possible_start_time)
+    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time current_time, Time last_possible_start_time)
     {
         Collection<Integer> workstations_id= new ArrayList<>();
 
@@ -392,10 +392,11 @@ public class EmployeeDAO {
                                                                 "        FROM services s2" +
                                                                 "        WHERE s2.EndTime > ?" +
                                                                 "    ) OR s.MechanicId IS NULL" +
-                                                                ") AND e.Type = 'M'")) 
+                                                                ") AND e.Type = 'M' AND s.StartTime > ?")) 
         {
             ps.setString(1, type.name());
             ps.setString(2, last_possible_start_time.toString());
+            ps.setTime(3, current_time);
             try (ResultSet rsa = ps.executeQuery()) 
             {
                 while (rsa.next()) 

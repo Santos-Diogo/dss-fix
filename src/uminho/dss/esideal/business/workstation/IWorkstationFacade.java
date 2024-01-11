@@ -16,7 +16,7 @@ public interface IWorkstationFacade
 
     public Collection<Workstation> getWorkstations () throws Exception;
 
-    public Collection<Integer> getWorkstationAvailableId (Service.Type type, Time last_possible_start_time);
+    public Collection<Integer> getWorkstationAvailableId (Service.Type type, Time current_time, Time last_possible_start_time);
 
     public Map<String, Object> getLeastOccupiedWorkstation(Collection<Integer> workstations);
 

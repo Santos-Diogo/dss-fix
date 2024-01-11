@@ -37,7 +37,7 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     private LocalTime opening_time; 
     private LocalTime closing_time;
 
-    private LocalTime current_time;  // set this as a variable in the UI
+    private LocalTime current_time= LocalTime.of(9, 0, 0);  // set this as a variable in the UI
 
     public StationFacade () {
         this.modelEmployee = new EmployeeFacade();
@@ -84,16 +84,6 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     @Override
     public void startShift(int mechanic_id, int workstation_id) throws Exception
     {
-        // workstation or employee?
-        // i would say employee since it said he uses his card, and I would say every Employee
-        // has to have assigned a workstation, but not the other way, thats how i got it 
-        // from the text. 
-        
-        // CHANGE TO EMPLOYEE
-
-        
-        
-
         Mechanic employee = (Mechanic) modelEmployee.getEmployeeById(mechanic_id);
         if(employee.getSkillset().containsAll(this.modelWorkstation.getSkillset(workstation_id)))
         {
@@ -115,12 +105,6 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     }
 
     @Override
-    // keep it void?
-    // My suggestion is to make the endJob just dependent on the Mechanic, so
-    // the Mechanic when starting a job takes the first DUE job of the day, if 
-    // there is already a due job nothing happens
-    // therefore here just the first job with STATUS = STARTED is closed, and we
-    // dont have to enter any job_id, so its not shown in the UI
     public void endJob(int mechanic_id) 
     {
         this.modelEmployee.mechanicEndService(mechanic_id);
@@ -153,11 +137,11 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     {
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, last_possible_start_time);
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
 
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -205,10 +189,10 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         Type type = Type.UNIVERSAL;
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, last_possible_start_time);
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, Time.valueOf(current_time), last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -228,6 +212,8 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         LocalTime mechanicTime =(LocalTime) mechanicIDtime.get("time");
         LocalTime minTime = (workstationTime.isBefore(mechanicTime)) ? workstationTime : mechanicTime;
         if (minTime.isBefore(this.opening_time)) minTime = this.opening_time;
+        minTime= (minTime.isBefore(current_time)) ? current_time : minTime;
+
         Service service = new Service(minTime, minTime.plus(duration), type, name, (Integer) workstationIDtime.get("id"), (Integer) mechanicIDtime.get("id"), car, status);
         this.modelService.addOrUpdateService(service);
         return minTime;

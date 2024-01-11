@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import uminho.dss.esideal.business.service.Service;
+import uminho.dss.esideal.business.service.Service.Type;
 import uminho.dss.esideal.data.EmployeeDAO;
 import uminho.dss.esideal.data.ServiceDAO;
 
@@ -102,8 +103,9 @@ public class EmployeeFacade implements IEmployeeFacade {
         return this.employeeDAO.getLeastOccupiedMechanic(mechanic);
     }
 
-    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time last_possible_start_time)
+    @Override
+    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time current_time, Time last_possible_start_time)
     {
-        return this.employeeDAO.getMechanicsAvailableId (type, last_possible_start_time);
+        return this.employeeDAO.getMechanicsAvailableId (type, current_time, last_possible_start_time);
     }
 }

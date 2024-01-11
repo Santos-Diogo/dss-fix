@@ -50,9 +50,9 @@ public class WorkstationFacade implements IWorkstationFacade{
     }
 
     @Override
-    public Collection<Integer> getWorkstationAvailableId (Type type, Time last_possible_start_time) 
+    public Collection<Integer> getWorkstationAvailableId (Type type, Time current_time, Time last_possible_start_time) 
     {
-        return this.workstations.getWorkstationAvailable(type, last_possible_start_time);
+        return this.workstations.getWorkstationAvailable(type, current_time, last_possible_start_time);
     }
 
 
