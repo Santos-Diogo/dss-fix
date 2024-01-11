@@ -26,6 +26,6 @@ public interface IEmployeeFacade
     public boolean doesEmployeeExist(int employeeId);
     public Employee removeEmployeeById(int employeeId);
     public Collection<Employee> getAllEmployees();
-    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time current_time, Time last_possible_start_time);
+    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time last_possible_start_time);
     public Map<String, Object> getLeastOccupiedMechanic(Collection<Integer> mechanic);
 }

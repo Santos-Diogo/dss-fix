@@ -317,10 +317,11 @@ public class ServiceDAO {
     public List<Service> getServicesByMechanic(int mechanicId) {
         List<Service> services = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM services WHERE MechanicId = ?")) {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM services WHERE MechanicId = ? AND Status= 'DUE'")) {
             ps.setInt(1, mechanicId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    System.out.println("FODA SE");
                     Service service = new Service(
                         rs.getInt("Id"),
                         rs.getTime("StartTime").toLocalTime(),
@@ -331,6 +332,7 @@ public class ServiceDAO {
                         rs.getString("VehicleId"),
                         Service.Status.valueOf(rs.getString("Status"))
                         );
+                    System.out.println("FODA SE");
                     services.add(service);
                 }
             }
@@ -345,7 +347,7 @@ public class ServiceDAO {
     {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
             PreparedStatement ps = conn.prepareStatement(
-                "UPDATE services SET Status = CASE WHEN EndTime < ? AND Status = 'Due' THEN 'Finished' ELSE Status END")) 
+                "UPDATE services SET Status = CASE WHEN EndTime < ? AND Status = 'Due' THEN 'FINISHED' ELSE Status END")) 
         {
             ps.setTime(1, time);
             ps.executeUpdate();

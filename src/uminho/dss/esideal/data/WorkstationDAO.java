@@ -174,7 +174,7 @@ public class WorkstationDAO {
         return res;
     }
 
-    public Collection<Integer> getWorkstationAvailable(Service.Type type, Time current_time, Time last_possible_start_time)
+    public Collection<Integer> getWorkstationAvailable(Service.Type type, Time last_possible_start_time)
     {
         Collection<Integer> workstations_id= new ArrayList<>();
 
@@ -192,11 +192,10 @@ public class WorkstationDAO {
                                                                 "        WHERE s2.WorkstationId = w.Id "+
                                                                 "        AND s2.EndTime > ?"+
                                                                 "    )"+
-                                                                "OR s.WorkstationId IS NULL) AND s.startTime > ?")) 
+                                                                "OR s.WorkstationId IS NULL)")) 
         {
             ps.setString(1, type.name());
             ps.setString(2, last_possible_start_time.toString());
-            ps.setTime(3, current_time);
             try (ResultSet rsa = ps.executeQuery()) 
             {
                 while (rsa.next()) 

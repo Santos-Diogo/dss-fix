@@ -126,7 +126,7 @@ public class TextUI
             System.out.println("ID\tMATRICULA\tDESCRICAO");
             for (Service s: services)
             {
-                System.out.println(s.getId()+"\t"+s.getVehicleId()+"\t"+"NAO ESQUECER DESCRICAO");
+                System.out.println(s.getId()+"\t"+s.getVehicleId()+"\t"+s.getName());
             }
         }
     }

@@ -316,7 +316,7 @@ public class EmployeeDAO {
     
 
 
-    /*public void mechanicStartShift(int mechanicId) {
+    public void mechanicStartShift(int mechanicId) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD)) {
             // Insert or update the shift start time
             try (PreparedStatement ps = conn.prepareStatement(
@@ -329,7 +329,7 @@ public class EmployeeDAO {
             throw new RuntimeException("Error starting mechanic shift: " + e.getMessage());
         }
     }
-    */
+   
 
 
     public void mechanicEndShift(int mechanicId) {
@@ -345,10 +345,8 @@ public class EmployeeDAO {
             throw new RuntimeException("Error ending mechanic shift: " + e.getMessage());
         }
     }
-    
 
-
-    /* public void mechanicStartService(int service_id){
+    public void mechanicStartService(int service_id){
         ServiceDAO serviceDao = ServiceDAO.getInstance();
         Service service = serviceDao.getById(service_id);
 
@@ -372,10 +370,10 @@ public class EmployeeDAO {
         } else {
             throw new IllegalStateException("Service cannot be ended");
         }
-    } */
+    }
 
     
-    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time current_time, Time last_possible_start_time)
+    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time last_possible_start_time)
     {
         Collection<Integer> workstations_id= new ArrayList<>();
 
@@ -392,11 +390,10 @@ public class EmployeeDAO {
                                                                 "        FROM services s2" +
                                                                 "        WHERE s2.EndTime > ?" +
                                                                 "    ) OR s.MechanicId IS NULL" +
-                                                                ") AND e.Type = 'M' AND s.StartTime > ?")) 
+                                                                ") AND e.Type = 'M'")) 
         {
             ps.setString(1, type.name());
             ps.setString(2, last_possible_start_time.toString());
-            ps.setTime(3, current_time);
             try (ResultSet rsa = ps.executeQuery()) 
             {
                 while (rsa.next()) 

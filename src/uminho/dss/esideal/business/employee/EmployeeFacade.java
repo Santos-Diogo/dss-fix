@@ -78,12 +78,12 @@ public class EmployeeFacade implements IEmployeeFacade {
 
     @Override
     public void mechanicStartService(int service_id) {  //When we figure out the time
-        //employeeDAO.mechanicStartService(service_id);
+        employeeDAO.mechanicStartService(service_id);
     }
 
     @Override
     public void mechanicEndService(int service_id) {    //When we figure out the time
-        //employeeDAO.mechanicEndService(service_id);
+        employeeDAO.mechanicEndService(service_id);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class EmployeeFacade implements IEmployeeFacade {
     }
 
     @Override
-    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time current_time, Time last_possible_start_time)
+    public Collection<Integer> getMechanicsAvailableId (Service.Type type, Time last_possible_start_time)
     {
-        return this.employeeDAO.getMechanicsAvailableId (type, current_time, last_possible_start_time);
+        return this.employeeDAO.getMechanicsAvailableId (type, last_possible_start_time);
     }
 }

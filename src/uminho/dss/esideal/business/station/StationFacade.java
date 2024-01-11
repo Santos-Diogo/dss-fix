@@ -125,13 +125,12 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     {
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Time current_time= this.statusDAO.getTime();
 
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, current_time, last_possible_start_time);
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
 
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, current_time, last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -174,17 +173,17 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     }
 
     @Override
-    public LocalTime scheduleCheckup (String vehicle) throws Exception{
+    public LocalTime scheduleCheckup (String vehicle) throws Exception
+    {
         Duration duration = Duration.ofHours(1);
         Type type = Type.UNIVERSAL;
         LocalTime last_poss= this.closing_time.minus(duration);
         Time last_possible_start_time= Time.valueOf(last_poss);
-        Time current_time= this.statusDAO.getTime();
 
-        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, current_time, last_possible_start_time);
+        Collection<Integer> workstations= modelWorkstation.getWorkstationAvailableId (type, last_possible_start_time);
         if (workstations.isEmpty())
             throw new Exception("No workstation available today");
-        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, current_time, last_possible_start_time);
+        Collection<Integer> employees= modelEmployee.getMechanicsAvailableId (type, last_possible_start_time);
         if (employees.isEmpty())
             throw new Exception("No mechanic available today");
             
@@ -224,7 +223,6 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     @Override
     public void setTime (Time time)
     {
-        this.modelService.updateTime(time);
         this.statusDAO.setTime(time);
     }
 
