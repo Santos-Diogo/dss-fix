@@ -21,5 +21,7 @@ public interface IStationFacadeSM
 
     public int nextEmployeeID ();
 
+    public void setOpeningHour (Time time);
+
     public void setTime (Time time);
 }

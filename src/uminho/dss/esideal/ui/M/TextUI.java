@@ -57,11 +57,11 @@ public class TextUI
                 System.out.println("There is no Mechanic with those credentials");
                 return false;
             }
-
+            return true;
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+            System.out.println("There is no Mechanic with those credentials");
+            return false;
         }
-        return true;
     }
     
     public void listWorkstations ()

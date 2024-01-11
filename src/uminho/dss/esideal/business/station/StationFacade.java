@@ -247,4 +247,10 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
         this.modelService.updateTime(time);
         this.current_time= time.toLocalTime();
     }
+
+    @Override
+    public void setOpeningHour(Time time) 
+    {
+        this.opening_time= time.toLocalTime();
+    }
 }

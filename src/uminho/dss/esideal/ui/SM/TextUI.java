@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream;
+
 import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.station.*;
 import uminho.dss.esideal.business.workstation.Workstation;
 import uminho.dss.esideal.ui.Menu;
+import uminho.dss.esideal.ui.Parse.Parse;
 
 public class TextUI {
 
@@ -44,10 +47,11 @@ public class TextUI {
                 System.out.println("There is no System Manager with those credentials");
                 return false;
             }
+            return true;
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+            System.out.println("There is no System Manager with those credentials");
+            return false;
         }
-        return true;
     }
 
     private void mainMenu() {
@@ -60,46 +64,71 @@ public class TextUI {
         
         menu.setHandler(1, ()->manageWorkstations());
         menu.setHandler(2, ()->manageEmployees());
-        menu.setHandler(3, ()->selectCurrentTime());
+        menu.setHandler(3, ()->registerOpeningHour());
+        menu.setHandler(4, ()->selectCurrentTime());
         menu.run();
     }
 
+    
     private void manageWorkstations () {
         Menu menu = new Menu("Workstations management", new String[]{
-                    "Register Workstation",
-                    "Remove Workstation"
+            "Register Workstation",
+            "Remove Workstation"
         });
-
+        
         menu.setHandler(1, ()->registerWorkstation());
         menu.run();
     }
     
     private void manageEmployees () {
         Menu menu = new Menu("Employees management", new String[]{
-                    "Register Frontdesk",
-                    "Remove Frontdesk",
-                    "Register Mechanic",
-                    "Remove Mechanic"
+            "Register Frontdesk",
+            "Remove Frontdesk",
+            "Register Mechanic",
+            "Remove Mechanic"
         });
-
+        
         /* menu.setPreCondition(2, null);
         menu.setPreCondition(3, null); */
-
-
+        
+        
         menu.setHandler(1, ()->registerFrontdesk());
         menu.setHandler(3, ()->registerMechanic());
-       /* menu.setHandler(3, null);
+        /* menu.setHandler(3, null);
         menu.setHandler(4, null); */
         menu.run();
+    }
+    
+    private void registerOpeningHour ()
+    {
+        try
+        {
+            System.out.println("Input opening hour:");
+            System.out.print("Time in format 'hh:mm:ss : ");
+            String in= scan.nextLine();
+            Time time= Parse.parseInputTime(in);
+            model.setOpeningHour(time);
+        }
+        catch (Exception e)
+        {
+            System.err.println("Please input a valid time format");
+        }
     }
 
     private void selectCurrentTime ()
     {
-        System.out.println("Introduze time you want to skip to:");
-        System.out.print("Time in format 'hh:mm:ss : ");
-        String in= scan.nextLine();
-        Time time= new Time(Time.parse(in));
-        model.setTime(time);
+        try
+        {
+            System.out.println("Input time you want to skip to:");
+            System.out.print("Time in format 'hh:mm:ss : ");
+            String in= scan.nextLine();
+            Time time= Parse.parseInputTime(in);
+            model.setTime(time);
+        }
+        catch (Exception e)
+        {
+            System.err.println("Please input a valid time format");
+        }
     }
 
     private void registerFrontdesk () {

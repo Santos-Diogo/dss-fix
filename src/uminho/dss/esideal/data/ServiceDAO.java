@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
+
 import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.service.Service.Status;
 
@@ -339,8 +341,19 @@ public class ServiceDAO {
         return services;
     }
 
-    public void updateTime (Time time)
+    public void updateTime(Time time) 
     {
-        throw new Exception("N TA FEITO");
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+            PreparedStatement ps = conn.prepareStatement(
+                "UPDATE services SET Status = CASE WHEN EndTime < ? AND Status = 'Due' THEN 'Finished' ELSE Status END")) 
+        {
+            ps.setTime(1, time);
+            ps.executeUpdate();
+        } 
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

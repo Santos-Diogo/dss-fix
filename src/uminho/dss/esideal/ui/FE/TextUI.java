@@ -40,10 +40,12 @@ public class TextUI {
                 System.out.println("There is no Frontdesk Employee with those credentials");
                 return false;
             }
-        } catch (NumberFormatException e) {
-            System.out.println(e.getMessage());
+            return true;
+        } catch (NumberFormatException e) 
+        {
+            System.out.println("There is no Frontdesk Employee with those credentials");
+            return false;
         }
-        return true;
     }
 
     private void mainMenu() {
