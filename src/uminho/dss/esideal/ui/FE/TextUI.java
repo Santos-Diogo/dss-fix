@@ -49,7 +49,7 @@ public class TextUI {
     }
 
     private void mainMenu() {
-        Menu menu = new Menu("System Manager Menu - "+this.name, new String[]{
+        Menu menu = new Menu("Frontdesk Employee Menu - "+this.name, new String[]{
                 "Register Client",
                 "Register Vehicle",
                 "Schedule Check-up",

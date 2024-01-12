@@ -3,7 +3,6 @@ package uminho.dss.esideal.business.employee;
 import java.util.List;
 import java.util.Map;
 import java.sql.Time;
-import java.time.Duration;
 import java.util.Collection;
 
 
@@ -15,7 +14,7 @@ public interface IEmployeeFacade
     public boolean registerEmployee (Integer id, String name, String password, Collection<Service.Type> skillset);
     //public void mechanicStartShift (int id);
     public void mechanicEndShift(int mechanic_id);
-    public void mechanicStartService(int mechanic_id);
+    public void mechanicStartService(int service_id);
     public void mechanicEndService(int service_id);
     public List<Service> listServicesForMechanic (int mechanic_id);
     public int nextEmployeeID ();

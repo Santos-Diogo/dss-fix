@@ -21,6 +21,8 @@ public interface IServiceFacade {
 
     Collection<Service> getServicesByMechanic (int mechanic_id);
 
+    public Integer getFirstDueServiceByMechanic(int employeeID);
+
     public void startService(int workstationId, int employeeID, LocalTime current);
 
     void endService(int id);

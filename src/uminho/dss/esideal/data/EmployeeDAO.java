@@ -5,7 +5,6 @@ import uminho.dss.esideal.business.employee.Mechanic;
 import uminho.dss.esideal.business.service.Service;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -351,9 +350,7 @@ public class EmployeeDAO {
         Service service = serviceDao.getById(service_id);
 
         if (service != null && service.getStatus() != Service.Status.FINISHED) {
-            service.setStatus(Service.Status.STARTED);
-            service.setStart(LocalDateTime.now()); // Assuming you store the start time
-            serviceDao.addOrUpdate(service);
+            serviceDao.startService(service_id);
         } else {
             throw new IllegalStateException("Service cannot be started");
         }
@@ -364,9 +361,7 @@ public class EmployeeDAO {
         Service service = serviceDao.getById(service_id);
 
         if (service != null && service.getStatus() == Service.Status.STARTED) {
-            service.setStatus(Service.Status.FINISHED);
-            service.setEnd(LocalDateTime.now()); // Assuming you store the end time
-            serviceDao.addOrUpdate(service);
+            serviceDao.endService(service_id);
         } else {
             throw new IllegalStateException("Service cannot be ended");
         }

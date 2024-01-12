@@ -17,7 +17,9 @@ public interface IStationFacadeM
 
     public Collection<Workstation> listWorkstation() throws Exception;
 
-    public void startJob(int mechanic_id);
+    public boolean startJob(int mechanic_id, int workstation_id) throws Exception;
+
+    public void endCheckup(int mechanic_id);
 
     public void endJob(int job_id);
 }

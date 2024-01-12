@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import com.mysql.cj.xdevapi.PreparableStatement;
 
 import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.service.Service.Status;
@@ -94,6 +93,7 @@ public class ServiceDAO {
                     service.setEnd(rs.getTime("EndTime").toLocalTime());
                     service.setType(Service.Type.valueOf(rs.getString("Type")));
                     service.setWorkstationId(rs.getInt("WorkstationId"));
+                    service.setName(rs.getString("Name"));
                     service.setVehicleId(rs.getString("VehicleId"));
                     service.setStatus(Service.Status.valueOf(rs.getString("Status"))); // New line for status
                     return service;
@@ -122,6 +122,58 @@ public class ServiceDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
+        }
+    }
+
+    public void startService (int serviceId) {
+        try (Connection connection = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD)) {
+            connection.setAutoCommit(false);
+
+            try {
+                String updateSql = "UPDATE services SET Status = 'STARTED' WHERE id = ?";
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
+                    updateStatement.setInt(1, serviceId);
+
+                    int rowsAffected = updateStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        connection.commit();
+                    } else {
+                        connection.rollback();
+                    }
+                }
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void endService (int serviceId) {
+        try (Connection connection = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD)) {
+            connection.setAutoCommit(false);
+
+            try {
+                String updateSql = "UPDATE services SET Status = 'FINISHED' WHERE id = ?";
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
+                    updateStatement.setInt(1, serviceId);
+
+                    int rowsAffected = updateStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        connection.commit();
+                    } else {
+                        connection.rollback();
+                    }
+                }
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -190,11 +242,30 @@ public class ServiceDAO {
     public Integer getFirstDueServiceOfDayByWorkstation(LocalTime current, int workstationId, int employeeID) {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                 PreparedStatement ps = conn.prepareStatement(
-                        "SELECT Id FROM services WHERE WorkstationId = ? AND MechanidId = ? AND Status = 'DUE' ORDER BY StartTime ASC LIMIT 1")) {
+                        "SELECT Id FROM services WHERE WorkstationId = ? AND MechanicId = ? AND Status = 'DUE' ORDER BY StartTime ASC LIMIT 1")) {
 
             
             ps.setInt(1, workstationId);
             ps.setInt(2, employeeID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("Id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return null;
+    }
+
+    public Integer getFirstDueServiceByMechanic(int employeeID) {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                PreparedStatement ps = conn.prepareStatement(
+                        "SELECT Id FROM services WHERE MechanicId = ? AND Status = 'DUE' ORDER BY StartTime ASC LIMIT 1")) {
+
+            ps.setInt(1, employeeID);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -321,7 +392,6 @@ public class ServiceDAO {
             ps.setInt(1, mechanicId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    System.out.println("FODA SE");
                     Service service = new Service(
                         rs.getInt("Id"),
                         rs.getTime("StartTime").toLocalTime(),
@@ -332,7 +402,6 @@ public class ServiceDAO {
                         rs.getString("VehicleId"),
                         Service.Status.valueOf(rs.getString("Status"))
                         );
-                    System.out.println("FODA SE");
                     services.add(service);
                 }
             }

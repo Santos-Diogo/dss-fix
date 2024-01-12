@@ -87,21 +87,30 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
 
     @Override
     // also delegating work to modelService
-    public void startJob(int mechanic_id) 
+    public boolean startJob(int mechanic_id, int workstation_id) throws Exception
     {
-        this.modelEmployee.mechanicStartService(mechanic_id);
+        int service_id = this.modelService.getFirstDueServiceByMechanic(mechanic_id);
+        Service service = this.modelService.getServiceById(service_id);
+        if (service.getWorkstationId() != workstation_id) throw new Exception("Please change to the workstation assigned to the service: "+service.getWorkstationId());
+        this.modelEmployee.mechanicStartService(service_id);
+        return (service.getName().equals("Checkup"));
     }
 
     @Override
-    public void endJob(int mechanic_id) 
+    public void endJob(int service_id) 
     {
-        this.modelEmployee.mechanicEndService(mechanic_id);
+        this.modelEmployee.mechanicEndService(service_id);
     }
 
     @Override
     public void endShift(int employeeId) 
     {
         this.modelEmployee.mechanicEndShift(employeeId);
+    }
+
+    @Override
+    public void endCheckup(int mechanic) {
+
     }
 
     public Collection<Workstation> listWorkstation() throws Exception
@@ -230,5 +239,6 @@ public class StationFacade implements IStationFacadeSM, IStationFacadeFE, IStati
     public void setOpeningHour(Time time) 
     {
         this.opening_time= time.toLocalTime();
+        this.statusDAO.initialTime(time);
     }
 }

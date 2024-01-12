@@ -51,6 +51,10 @@ public class ServiceFacade implements IServiceFacade{
         return serviceDAO.getServicesByMechanic(mechanic_id);
     }
 
+    public Integer getFirstDueServiceByMechanic(int employeeID) {
+        return serviceDAO.getFirstDueServiceByMechanic(employeeID);
+    }
+
     public void startService(int workstationId, int employeeId, LocalTime current){
         // CHANGE to Workstation and Employee
         if (serviceDAO.hasDueServiceTodayByWorkstation(current, workstationId, employeeId)) {

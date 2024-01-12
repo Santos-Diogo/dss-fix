@@ -56,6 +56,21 @@ public class StationStatusDAO
         }
     }
 
+    public void initialTime(Time time) 
+    {
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO CurrentTime (Time) VALUES (?)")) 
+        {
+            ps.setTime(1, time);
+            ps.executeUpdate();
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+    }
+
     public Time getTime() 
     {
         Time t = null;

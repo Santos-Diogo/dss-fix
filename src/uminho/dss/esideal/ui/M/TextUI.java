@@ -1,8 +1,9 @@
 package uminho.dss.esideal.ui.M;
 
-import java.io.Console;
 import java.util.Scanner;
 import java.util.Collection;
+import java.util.Map;
+
 import uminho.dss.esideal.business.workstation.Workstation;
 import uminho.dss.esideal.business.service.Service;
 import uminho.dss.esideal.business.station.IStationFacadeM;
@@ -15,7 +16,10 @@ public class TextUI
     private String name;
     private int myNum;
     private int myWorkstation;
+    private boolean checkup = false;
     private final Scanner scan;
+    private final Map<String, Integer> universal= Map.of("replacing the tires", 10, "calibrating the wheels", 20, "aligning the steering", 30, "replacing the injectors", 20, "replacing the brake pads", 25, "changing the brake oil", 15, "cleaning the interior and/or exte-rior", 10, "replacing the cabin air filter", 40);
+
 
     public TextUI() 
     {
@@ -101,7 +105,7 @@ public class TextUI
 
     public void startShit (int mechanic_id, int workstation_id)
     {
-        try
+        try 
         {
             model.startShift(mechanic_id, workstation_id);
         }
@@ -123,21 +127,27 @@ public class TextUI
         else
         {
             System.out.println("Available Jobs:");
-            System.out.println("ID\tMATRICULA\tDESCRICAO");
+            System.out.println("ID\tMATRICULA\tDESCRICAO\tWORKSTATION");
             for (Service s: services)
             {
-                System.out.println(s.getId()+"\t"+s.getVehicleId()+"\t"+s.getName());
+                System.out.println(String.format("%d\t%s\t%s\t\t%d", s.getId(), s.getVehicleId(), s.getName(), s.getWorkstationId()));
             }
         }
     }
     
     public void startJob ()
     {
-        model.startJob(myNum);
+        try {
+            this.checkup = model.startJob(myNum, myWorkstation);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void endJob ()
     {
-        model.endJob(myNum);
+        if (checkup)
+            model.endCheckup(myNum);
+            //model.endJob(myNum);
     }
 }
